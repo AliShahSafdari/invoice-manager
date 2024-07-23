@@ -21,7 +21,7 @@ export const Spinner = () => {
 export const DotLoader = () => {
   return (
     <div class="lds-ellipsis">
-      <div>eeee</div>
+      <div></div>
       <div></div>
       <div></div>
       <div></div>
