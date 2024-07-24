@@ -16,27 +16,50 @@ import { format, formatDate } from 'date-fns'
 import { Badge } from "@/components/ui/badge"
 import ReactPaginate from 'react-paginate';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation'
+import { useDebouncedCallback } from 'use-debounce';
 
 export default function ListInvoice({ total, pageNumber, invoices: data }) {
-  
+
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
-  const [pageCount, setPageCount] = useState(1); 
+  const [pageCount, setPageCount] = useState(1);
   const currentPage = useRef(1);
-  useEffect(()=>{
-    if(total>0){
+
+  const [search, setSearch] = useState("");
+
+  const debouncedHandleSearch = useDebouncedCallback(() => {
+    const params = new URLSearchParams(searchParams.toString());
+    params.set("page", 1);
+
+    if (search) {
+      params.set("search", search);
+    } else {
+      params.delete("search");
+    }
+    router.replace(`${pathname}?${params.toString()}`);
+
+  },
+    500
+  );
+
+  useEffect(() => {
+    debouncedHandleSearch()
+  }, [search])
+
+  useEffect(() => {
+    if (total > 0) {
       setPageCount(pageNumber)
     }
-  },[pageNumber, total]);
+  }, [pageNumber, total]);
 
-  function handlePageClick(e){
+  function handlePageClick(e) {
     const params = new URLSearchParams(searchParams.toString());
-    
-    if(currentPage.current){
-      params.set("page", e.selected +1);
+
+    if (currentPage.current) {
+      params.set("page", e.selected + 1);
     }
-    currentPage.current = e.selected +1;
+    currentPage.current = e.selected + 1;
     router.replace(`${pathname}?${params.toString()}`);
   }
 
@@ -44,7 +67,10 @@ export default function ListInvoice({ total, pageNumber, invoices: data }) {
     <div>
       <div className=' flex-between border-b-[1px] border-gray-400 pb-3'>
         <p>{total} invoices</p>
-        <Search />
+        <Search
+          placeholder={"Search"}
+          value={search}
+          onChange={(e) => setSearch(e.target.value)} />
       </div>
       <Table>
         <TableHeader>
@@ -96,23 +122,23 @@ export default function ListInvoice({ total, pageNumber, invoices: data }) {
           ))}
         </TableBody>
       </Table>
-      {data?.length>0&&(
+      {data?.length > 0 && (
         <ReactPaginate
-        breakLabel="..."
-        nextLabel="Next"
-        onPageChange={handlePageClick}
-        pageRangeDisplayed={3}
-        pageCount={pageCount}
-        previousLabel="Previous"
-        renderOnZeroPageCount={null}
+          breakLabel="..."
+          nextLabel="Next"
+          onPageChange={handlePageClick}
+          pageRangeDisplayed={3}
+          pageCount={pageCount}
+          previousLabel="Previous"
+          renderOnZeroPageCount={null}
 
-        marginPagesDisplayed={2}
-        containerClassName='pagination'
-        pageLinkClassName='page-num'
-        previousLinkClassName='page-num'
-        nextLinkClassName='page-num'
-        activeLinkClassName='activePage'
-      />
+          marginPagesDisplayed={2}
+          containerClassName='pagination'
+          pageLinkClassName='page-num'
+          previousLinkClassName='page-num'
+          nextLinkClassName='page-num'
+          activeLinkClassName='activePage'
+        />
       )
       }
     </div>
