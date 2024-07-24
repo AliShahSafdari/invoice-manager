@@ -88,24 +88,26 @@ export default function CreateInvoice() {
     async function onSubmit(values) {
         console.log(values)
         const { name, amount, status } = values
-        const customer = customers.find((c)=> c.name===name);
+        const customer = customers.find((c) => c.name === name);
         const formData = {
             amount,
             customer,
             status,
-            id: id? id: ""
+            id: id ? id : ""
         };
-        if(id){
+        if (id) {
             // updated
-        }else{
+        } else {
             const res = await createInvoice(formData);
             console.log(res);
-            if(res?.error){
+            if (res?.error) {
                 toast.error(res?.error);
             }
-            if(res?.message){
+            if (res?.message) {
                 toast.success(res?.message);
             }
+            form.reset();
+            setOpen(false);
         }
     }
 
