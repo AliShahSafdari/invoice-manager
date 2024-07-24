@@ -1,4 +1,5 @@
-import React from 'react'
+"use client"
+import React, { useEffect, useRef, useState } from 'react'
 import Search from '../widgets/Search'
 import {
   Table,
@@ -13,8 +14,32 @@ import {
 import { Avatar, AvatarFallback, AvatarImage, } from "@/components/ui/avatar"
 import { format, formatDate } from 'date-fns'
 import { Badge } from "@/components/ui/badge"
+import ReactPaginate from 'react-paginate';
+import { usePathname, useRouter, useSearchParams } from 'next/navigation'
 
 export default function ListInvoice({ total, pageNumber, invoices: data }) {
+  
+  const router = useRouter();
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
+  const [pageCount, setPageCount] = useState(1); 
+  const currentPage = useRef(1);
+  useEffect(()=>{
+    if(total>0){
+      setPageCount(pageNumber)
+    }
+  },[pageNumber, total]);
+
+  function handlePageClick(e){
+    const params = new URLSearchParams(searchParams.toString());
+    
+    if(currentPage.current){
+      params.set("page", e.selected +1);
+    }
+    currentPage.current = e.selected +1;
+    router.replace(`${pathname}?${params.toString()}`);
+  }
+
   return (
     <div>
       <div className=' flex-between border-b-[1px] border-gray-400 pb-3'>
@@ -60,7 +85,7 @@ export default function ListInvoice({ total, pageNumber, invoices: data }) {
               <TableCell> {format(new Date(inv?.createdAt), "MMM dd,yyyy")}</TableCell>
 
               <TableCell>
-                <Badge variant={inv?.status === 'paid' ? "default" : "destructive"}>
+                <Badge variant={inv?.status === 'Paid' ? "default" : "destructive"}>
                   {inv?.status}
                 </Badge>
               </TableCell>
@@ -71,6 +96,25 @@ export default function ListInvoice({ total, pageNumber, invoices: data }) {
           ))}
         </TableBody>
       </Table>
+      {data?.length>0&&(
+        <ReactPaginate
+        breakLabel="..."
+        nextLabel="Next"
+        onPageChange={handlePageClick}
+        pageRangeDisplayed={3}
+        pageCount={pageCount}
+        previousLabel="Previous"
+        renderOnZeroPageCount={null}
+
+        marginPagesDisplayed={2}
+        containerClassName='pagination'
+        pageLinkClassName='page-num'
+        previousLinkClassName='page-num'
+        nextLinkClassName='page-num'
+        activeLinkClassName='activePage'
+      />
+      )
+      }
     </div>
   )
 }
