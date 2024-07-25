@@ -138,12 +138,14 @@ export default function ListInvoice({ total, pageNumber, invoices: data }) {
                 <>
                   <span>
                     <Tooltip placement="top" trigger={['hover']} overlay={<span>Send Email</span>}>
-                      <RiMailSendLine
+                    <Link href={'#'}>  
+                    <RiMailSendLine
                         size={24}
                         color={"purple"}
                         className="course-pointer"
                       // onclick={()=>sendThisInvoice(inv)}
                       />
+                      </Link>
                     </Tooltip>
                   </span>
 
@@ -158,18 +160,15 @@ export default function ListInvoice({ total, pageNumber, invoices: data }) {
                     </Tooltip>
                   </span>
 
-                  <span>
                     <Tooltip placement="top" trigger={['hover']} overlay={<span>Delete</span>}>
-                      <span>
                         <DeleteModal
                           title={"Delete Invoice"}
                           desc={"Are you sure you want to delete this invoice?"}
                           pass={"delete"}
                           onClick={() => { onDelete(inv?._id) }}
                         />
-                      </span>
                     </Tooltip>
-                  </span>
+                  
                 </>
               </TableCell>
 
