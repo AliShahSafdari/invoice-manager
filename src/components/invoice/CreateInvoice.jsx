@@ -1,5 +1,5 @@
 "use client"
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import ActionModal from '../widgets/ActionModal'
 import { Button } from '../ui/button'
 import { zodResolver } from "@hookform/resolvers/zod"
@@ -25,7 +25,7 @@ import { Input } from '../ui/input'
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
 import { LoadingButton } from '../widgets/Loader'
 import { useRouter, useSearchParams } from 'next/navigation'
-import { createInvoice } from '@/actions/invoiceAction'
+import { createInvoice, getInvoice, updateInvoice } from '@/actions/invoiceAction'
 import { toast } from 'react-toastify'
 
 
@@ -70,6 +70,7 @@ const formSchema = z.object({
 
 export default function CreateInvoice() {
     const [open, setOpen] = useState(false);
+
     const router = useRouter();
     const searchParams = useSearchParams();
     const id = searchParams.get("id");
@@ -85,7 +86,6 @@ export default function CreateInvoice() {
 
     const isLoading = form.formState.isSubmitting;
     async function onSubmit(values) {
-        console.log(values)
         const { name, amount, status } = values
         const customer = customers.find((c) => c.name === name);
         const formData = {
@@ -96,9 +96,17 @@ export default function CreateInvoice() {
         };
         if (id) {
             // updated
+            const res = await updateInvoice(formData);
+            if (res?.error) {
+                toast.error(res?.error);
+            }
+            if (res?.message) {
+                toast.success(res?.message);
+            }
+            form.reset();
+            setOpen(false);
         } else {
             const res = await createInvoice(formData);
-            console.log(res);
             if (res?.error) {
                 toast.error(res?.error);
             }
@@ -110,11 +118,34 @@ export default function CreateInvoice() {
         }
     }
 
+    useEffect(() => {
+
+        const fetchInvoice = async () => {
+            const res = await getInvoice(id);
+            const inv = JSON.parse(res);
+
+            form.setValue("name", inv?.customer?.name);
+            form.setValue("amount", inv?.amount);
+            form.setValue("status", inv?.status);
+        }
+        if (id) {
+            setOpen(true);
+            fetchInvoice();
+        }
+
+    }, [id]);
+
+    useEffect(() => {
+        if (!open) {
+            router.replace("/");
+        }
+    }, [open, router]);
+
     return (
         <div>
             <ActionModal
-                title="Create Invoice"
-                desc="Create a new invoice"
+                title={id ? "Update Invoice" : "Create Invoice"}
+                desc={id ? "Update invoice" : "Create a new invoice"} 
                 trigger={
                     <Button className=" text-white space-x-1">
                         <span>Create Invoice</span>
@@ -132,7 +163,7 @@ export default function CreateInvoice() {
                             render={({ field }) => (
                                 <FormItem>
                                     <FormLabel>Name</FormLabel>
-                                    <Select onValueChange={field.onChange} defaultValue={field.value}>
+                                    <Select onValueChange={field.onChange} defaultValue={field.value} value={field.value}>
                                         <FormControl>
                                             <SelectTrigger>
                                                 <SelectValue placeholder="Select a customer" />
@@ -210,7 +241,9 @@ export default function CreateInvoice() {
                             <LoadingButton btnText={"Loading"} btnClass={"w-full"}
                                 btnVariant={"outline"} />
                         ) : (
-                            <Button className=" w-full" type="submit">Submit</Button>
+                            <Button className=" w-full" type="submit">
+                                {id ? "Update Invoice" : "Create Invoice"}
+                            </Button>
                         )}
 
                     </form>

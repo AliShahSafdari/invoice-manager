@@ -73,7 +73,6 @@ export default function ListInvoice({ total, pageNumber, invoices: data }) {
   }
   async function onDelete(id) {
     const res = await deleteInvoice(id);
-    console.log(res);
     if (res?.error) {
       toast.error(res?.error);
     }

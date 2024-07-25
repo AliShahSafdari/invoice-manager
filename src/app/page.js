@@ -13,8 +13,6 @@ export default async function Home({ searchParams }) {
   });
   const invoices = JSON.parse(res) || [];
 
-  console.log(invoices);
-
   return (
     <div className="flex justify-center min-h-[82vh]">
       <section className=" w-full px-2 max-w-[1000px]">
@@ -24,9 +22,9 @@ export default async function Home({ searchParams }) {
         </div>
         <Separator className="my-2 border-b-[2px] border-color-light-blue" />
         <ListInvoice
-        total={invoices.total}
-        pageNumber={invoices.pageCount}
-        invoices={invoices.data} />
+          total={invoices.total}
+          pageNumber={invoices.pageCount}
+          invoices={invoices.data} />
       </section>
     </div>
   );

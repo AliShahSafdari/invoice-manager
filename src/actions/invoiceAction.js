@@ -121,7 +121,7 @@ export const updateInvoice = async (formData) => {
     const { amount, status, id } = formData;
     try {
         await connectMongoDB();
-        const invoice = await Invoice.findByIdAndUpdate(id, {
+        await Invoice.findByIdAndUpdate(id, {
             amount,
             status
         });
