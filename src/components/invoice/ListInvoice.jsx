@@ -17,6 +17,12 @@ import { Badge } from "@/components/ui/badge"
 import ReactPaginate from 'react-paginate';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation'
 import { useDebouncedCallback } from 'use-debounce';
+import Tooltip from 'rc-tooltip';
+import 'rc-tooltip/assets/bootstrap_white.css'
+import Link from 'next/link'
+import { FaEdit } from "react-icons/fa"
+import { RiMailSendLine } from "react-icons/ri"
+import DeleteModal from '../widgets/DeleteModal'
 
 export default function ListInvoice({ total, pageNumber, invoices: data }) {
 
@@ -61,6 +67,9 @@ export default function ListInvoice({ total, pageNumber, invoices: data }) {
     }
     currentPage.current = e.selected + 1;
     router.replace(`${pathname}?${params.toString()}`);
+  }
+  function onDelete(id) {
+    console.log(id);
   }
 
   return (
@@ -115,7 +124,45 @@ export default function ListInvoice({ total, pageNumber, invoices: data }) {
                   {inv?.status}
                 </Badge>
               </TableCell>
-              <TableCell>Edite</TableCell>
+
+              <TableCell className="flex space-x-3">
+                <>
+                  <span>
+                    <Tooltip placement="top" trigger={['hover']} overlay={<span>Send Email</span>}>
+                      <RiMailSendLine
+                        size={24}
+                        color={"purple"}
+                        className="course-pointer"
+                      // onclick={()=>sendThisInvoice(inv)}
+                      />
+                    </Tooltip>
+                  </span>
+
+                  <span>
+                    <Tooltip placement="top" trigger={['hover']} overlay={<span>Edit</span>}>
+                      <Link href={`/?id=${inv?._id}`}>
+                        <FaEdit
+                          size={24}
+                          color={"green"}
+                          className="course-pointer" />
+                      </Link>
+                    </Tooltip>
+                  </span>
+
+                  <span>
+                    <Tooltip placement="top" trigger={['hover']} overlay={<span>Delete</span>}>
+                        <span>
+                        <DeleteModal
+                          title={"Delete Invoice"}
+                          desc={"Are you sure you want to delete this invoice?"}
+                          pass={"delete"}
+                          onClick={() => {onDelete(inv?._id)}}
+                        />
+                        </span>
+                    </Tooltip>
+                  </span>
+                </>
+              </TableCell>
 
 
             </TableRow>
