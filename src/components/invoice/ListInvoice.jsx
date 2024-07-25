@@ -71,16 +71,15 @@ export default function ListInvoice({ total, pageNumber, invoices: data }) {
     currentPage.current = e.selected + 1;
     router.replace(`${pathname}?${params.toString()}`);
   }
- async function onDelete(id) {
-    console.log(id);
+  async function onDelete(id) {
     const res = await deleteInvoice(id);
-            console.log(res);
-            if (res?.error) {
-                toast.error(res?.error);
-            }
-            if (res?.message) {
-                toast.success(res?.message);
-            }
+    console.log(res);
+    if (res?.error) {
+      toast.error(res?.error);
+    }
+    if (res?.message) {
+      toast.success(res?.message);
+    }
   }
 
   return (
@@ -162,14 +161,14 @@ export default function ListInvoice({ total, pageNumber, invoices: data }) {
 
                   <span>
                     <Tooltip placement="top" trigger={['hover']} overlay={<span>Delete</span>}>
-                        <span>
+                      <span>
                         <DeleteModal
                           title={"Delete Invoice"}
                           desc={"Are you sure you want to delete this invoice?"}
                           pass={"delete"}
-                          onClick={() => {onDelete(inv?._id)}}
+                          onClick={() => { onDelete(inv?._id) }}
                         />
-                        </span>
+                      </span>
                     </Tooltip>
                   </span>
                 </>
