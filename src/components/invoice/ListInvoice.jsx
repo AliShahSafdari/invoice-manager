@@ -12,7 +12,7 @@ import {
   TableRow,
 } from "@/components/ui/table"
 import { Avatar, AvatarFallback, AvatarImage, } from "@/components/ui/avatar"
-import { format, formatDate } from 'date-fns'
+import { format } from 'date-fns'
 import { Badge } from "@/components/ui/badge"
 import ReactPaginate from 'react-paginate';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation'
@@ -23,6 +23,9 @@ import Link from 'next/link'
 import { FaEdit } from "react-icons/fa"
 import { RiMailSendLine } from "react-icons/ri"
 import DeleteModal from '../widgets/DeleteModal'
+import { deleteInvoice } from '@/actions/invoiceAction'
+import { toast } from 'react-toastify'
+
 
 export default function ListInvoice({ total, pageNumber, invoices: data }) {
 
@@ -68,8 +71,16 @@ export default function ListInvoice({ total, pageNumber, invoices: data }) {
     currentPage.current = e.selected + 1;
     router.replace(`${pathname}?${params.toString()}`);
   }
-  function onDelete(id) {
+ async function onDelete(id) {
     console.log(id);
+    const res = await deleteInvoice(id);
+            console.log(res);
+            if (res?.error) {
+                toast.error(res?.error);
+            }
+            if (res?.message) {
+                toast.success(res?.message);
+            }
   }
 
   return (

@@ -86,3 +86,19 @@ export const getInvoices = async (params) => {
         }
     }
 }
+
+export const deleteInvoice = async (id) => {
+    try {
+        await connectMongoDB();
+        await Invoice.findByIdAndDelete(id)
+        revalidatePath("/")
+        return {
+            message: "Invoice Deleted successfully",
+        }
+    } catch (error) {
+        console.log(error);
+        return {
+            error: getErrorMessage(error),
+        }
+    }
+}
