@@ -25,6 +25,7 @@ import { RiMailSendLine } from "react-icons/ri"
 import DeleteModal from '../widgets/DeleteModal'
 import { deleteInvoice } from '@/actions/invoiceAction'
 import { toast } from 'react-toastify'
+import { sendEmail } from '@/actions/emailAction'
 
 
 export default function ListInvoice({ total, pageNumber, invoices: data }) {
@@ -73,6 +74,22 @@ export default function ListInvoice({ total, pageNumber, invoices: data }) {
   }
   async function onDelete(id) {
     const res = await deleteInvoice(id);
+    if (res?.error) {
+      toast.error(res?.error);
+    }
+    if (res?.message) {
+      toast.success(res?.message);
+    }
+  }
+  async function sendThisInvoice(id) {
+    console.log("Sending Email")
+    const res = await sendEmail({
+      subject:"Invoice",
+      message:"This is an invoice",
+      email: "asirat56@gmail.com"
+
+    })
+    console.log(res)
     if (res?.error) {
       toast.error(res?.error);
     }
@@ -138,14 +155,12 @@ export default function ListInvoice({ total, pageNumber, invoices: data }) {
                 <>
                   <span>
                     <Tooltip placement="top" trigger={['hover']} overlay={<span>Send Email</span>}>
-                    <Link href={'#'}>  
                     <RiMailSendLine
                         size={24}
                         color={"purple"}
                         className="course-pointer"
-                      // onclick={()=>sendThisInvoice(inv)}
+                      onClick={()=>sendThisInvoice(inv)}
                       />
-                      </Link>
                     </Tooltip>
                   </span>
 
