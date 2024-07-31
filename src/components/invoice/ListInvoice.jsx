@@ -81,12 +81,17 @@ export default function ListInvoice({ total, pageNumber, invoices: data }) {
       toast.success(res?.message);
     }
   }
-  async function sendThisInvoice(id) {
+  async function sendThisInvoice(inv) {
     console.log("Sending Email")
+    console.log(inv)
     const res = await sendEmail({
-      subject:"Invoice",
-      message:"This is an invoice",
-      email: "asirat56@gmail.com"
+      subject:"Invoice from AliShah Safdari",
+      // message:"This is an invoice",
+      email: inv?.customer?.email,
+      data:{
+        name: inv?.customer?.name,
+        amount: inv?.amount,
+      }
 
     })
     console.log(res)

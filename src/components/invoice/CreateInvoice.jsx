@@ -46,7 +46,7 @@ const customers = [
         id: 3,
         name: "Ali",
         image: "https://thumb.ac-illust.com/82/822138b952128153341ff647f7117670_t.jpeg",
-        email: "ali1@gmail.com"
+        email: "asirat56@gmail.com"
     },
     {
         id: 4,

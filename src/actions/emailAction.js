@@ -1,6 +1,16 @@
 "use server";
 import nodemailer from 'nodemailer';
 import * as handlebars from "handlebars";
+import { InvoiceTemplate } from '@/lib/emailTemplates/invoice';
+
+// https://usewaypoint.github.io/email-builder-js/#sample/subscription-receipt
+
+function compileInvoiceTemplate( name, amount){
+    const template = handlebars.compile(InvoiceTemplate);
+    const htmlBody = template({ name, amount})
+    return htmlBody;
+}
+
 
 export const sendEmail = async ({ subject, message, email, data }) => {
     const transporter = nodemailer.createTransport({
@@ -13,12 +23,13 @@ export const sendEmail = async ({ subject, message, email, data }) => {
             pass: process.env.EMAIL_PASS,
         },
     });
+    const template1 = compileInvoiceTemplate(data.name, data.amount)
 
     const mailOptions = {
         from: process.env.EMAIL_USER,
         to: email,
         subject: subject,
-        html: message,
+        html: template1,
     };
 
     try {
