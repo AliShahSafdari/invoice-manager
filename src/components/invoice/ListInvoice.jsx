@@ -55,7 +55,7 @@ export default function ListInvoice({ total, pageNumber, invoices: data }) {
 
   useEffect(() => {
     debouncedHandleSearch()
-  }, [search])
+  }, [search, debouncedHandleSearch])
 
   useEffect(() => {
     if (total > 0) {

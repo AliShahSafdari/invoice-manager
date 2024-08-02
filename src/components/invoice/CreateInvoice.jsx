@@ -133,7 +133,7 @@ export default function CreateInvoice() {
             fetchInvoice();
         }
 
-    }, [id]);
+    }, [id, form]);
 
     useEffect(() => {
         if (!open) {
