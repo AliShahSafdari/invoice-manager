@@ -1,7 +1,7 @@
 import { getInvoices } from "@/actions/invoiceAction";
-import CreateInvoice from "@/components/invoice/createInvoice";
-import ListInvoice from "@/components/invoice/ListInvoice";
-import { Separator } from "@/components/ui/separator"
+import CreateInvoice from "../components/invoice/CreateInvoice";
+import ListInvoice from "../components/invoice/ListInvoice";
+import { Separator } from "../components/ui/separator"
 export default async function Home({ searchParams }) {
   const search = searchParams?.search || "";
   const page = searchParams?.page || "";
