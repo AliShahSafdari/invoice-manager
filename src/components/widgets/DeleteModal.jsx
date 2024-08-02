@@ -45,4 +45,4 @@ const DeleteModal = forwardRef (({title, desc, pass,onClick})=> {
     )
 });
 
-export default DeleteModal;
+export default DeleteModal.displayName = 'DeleteModal';
